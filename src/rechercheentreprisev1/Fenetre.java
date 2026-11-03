@@ -7,6 +7,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -138,9 +140,9 @@ public class Fenetre extends JFrame {
     private void initajoutpan() {
         ajoutpan = new JPanel();
 
-        tf_noment = new JTextField();
-        tf_nument = new JTextField();
-        tf_emailent = new JTextField();
+        tf_noment = new JTextField("nom de l'entreprise");
+        tf_nument = new JTextField("numéro de téléphone");
+        tf_emailent = new JTextField("email de l'entreprise");
 
         tf_noment.setPreferredSize(new Dimension(400, 40));
         tf_nument.setPreferredSize(new Dimension(400, 40));
@@ -261,6 +263,10 @@ public class Fenetre extends JFrame {
                 createEntreprise(name, num, email);
                 listeEntreprises.sauvegarder();
                 changePan(pan);
+
+                tf_noment.setText("nom de l'entreprise");
+                tf_nument.setText("numéro de téléphone");
+                tf_emailent.setText("email de l'entreprise");
             }
         });
 
@@ -281,6 +287,33 @@ public class Fenetre extends JFrame {
                 actualiseTextField();
             }
         });
+
+        tf_noment.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                tf_noment.setText("");
+            }
+
+        });
+
+        tf_nument.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                tf_nument.setText("");
+            }
+
+        });
+
+        tf_emailent.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                tf_emailent.setText("");
+            }
+
+        });
     }
 
     private void chargerListe() {
@@ -292,16 +325,19 @@ public class Fenetre extends JFrame {
     }
 
     private void actualiseTextField() {
-        int ind = listeEntreprises.getNumSave();
-        if (ind <= 0) {
+        if (listeEntreprises.getList().isEmpty()) {
             tf_affichage.setText("");
         } else {
-            Entreprise entrepriseSelectionné = listeEntreprises.getList().get(ind);
-
-            if (entrepriseSelectionné.getEmail().equals("")) {
-                tf_affichage.setText(entrepriseSelectionné.getNom() + " - " + entrepriseSelectionné.getNumTel());
+            int ind = listeEntreprises.getNumSave();
+            if (ind < 0) {
+                tf_affichage.setText("");
             } else {
-                tf_affichage.setText(entrepriseSelectionné.getNom() + " - " + entrepriseSelectionné.getEmail());
+                Entreprise entrepriseSelectionné = listeEntreprises.getList().get(ind);
+                if (entrepriseSelectionné != null && entrepriseSelectionné.getEmail().equals("")) {
+                    tf_affichage.setText(entrepriseSelectionné.getNom() + " - " + entrepriseSelectionné.getNumTel());
+                } else {
+                    tf_affichage.setText(entrepriseSelectionné.getNom() + " - " + entrepriseSelectionné.getEmail());
+                }
             }
         }
 
